@@ -17,12 +17,12 @@
 # include <stdlib.h>
 # include <fcntl.h>
 # include <unistd.h>
-# define BUFFER_SIZE 42
+# define BUFFER_SIZE 3
 
 size_t	ft_strlen(const char *s);
-char	*ft_strdup(const char *s);
+char	*ft_strdup(char *s);
 void	ft_copy(const char *src, char *dst);
-char	*ft_strjoin(const char *s1, const char *s2);
+char	*ft_strjoin(char *s1, char *s2);
 char	*ft_strchr(char *str, char c);
 char	*get_next_line(int fd);
 char	*get_rest(char *s, char c);

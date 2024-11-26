@@ -22,7 +22,7 @@ size_t	ft_strlen(const char *s)
 	return (i);
 }
 
-char	*ft_strdup(const char *s)
+char	*ft_strdup(char *s)
 {
 	int		i;
 	char	*str;
@@ -39,6 +39,7 @@ char	*ft_strdup(const char *s)
 		i++;
 	}
 	str[i] = '\0';
+	free(s);
 	return (str);
 }
 
@@ -52,10 +53,11 @@ void	ft_copy(const char *src, char *dst)
 		dst[i] = src[i];
 		i++;
 	}
+	dst[i] = '\0';
 	return ;
 }
 
-char	*ft_strjoin(const char *s1, const char *s2)
+char	*ft_strjoin(char *s1, char *s2)
 {
 	char	*str;
 	int		i;
@@ -74,6 +76,8 @@ char	*ft_strjoin(const char *s1, const char *s2)
 	ft_copy(s1, str);
 	ft_copy(s2, str + ft_strlen(s1));
 	str[ft_strlen(s1) + ft_strlen(s2)] = '\0';
+	free(s1);
+	free(s2);
 	return (str);
 }
 

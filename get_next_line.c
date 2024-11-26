@@ -20,17 +20,21 @@ char	*get_line(char *s, char c)
 	i = 0;
 	if (!s)
 		return (NULL);
-	while (s[i] && (i && s[i - 1] != c))
+	while (s[i] && s[i] != c)
+		i++;
+	if (s[i] == c)
 		i++;
 	str = (char *)malloc(i + 1);
 	if (!str)
 		return (NULL);
 	i = 0;
-	while (str[i] && (i && s[i - 1] != c))
+	while (s[i] && s[i] != c)
 	{
 		str[i] = s[i];
 		i++;
 	}
+	if (s[i] == c)
+		str[i++] = c;
 	str[i] = '\0';
 	return (str);
 }
@@ -44,8 +48,12 @@ char	*get_rest(char *s, char c)
 		return (NULL);
 	while (s[i])
 	{
-		if (s[i] == c && s[i + 1] != '\n')
+		if (s[i] == c)
+		{
+			if (s[i + 1] == '\0')
+				return (NULL);
 			return (ft_strdup(s + i + 1));
+		}
 		i++;
 	}
 	return (NULL);
@@ -58,36 +66,27 @@ char	*get_next_line(int fd)
 	static char	*leftchar;
 	char		*str;
 
-	str = NULL;
-	if (fd < 0 || BUFFER_SIZE == 0)
+	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	while (1)
+	buffer = (char *)malloc(BUFFER_SIZE + 1);
+	if (!buffer)
+		return (NULL);
+	bytes = read(fd, buffer, BUFFER_SIZE);
+	while (bytes > 0)
 	{
-		buffer = (char *)malloc(BUFFER_SIZE + 1);
-		if (!buffer)
-			return (NULL);
-		bytes = read(fd, buffer, BUFFER_SIZE);
-		if (bytes < 0)
-			return (NULL);
-		if (!leftchar)
-		{
-			str = ft_strjoin(str, get_line(buffer, '\n'));
-			leftchar = ft_strjoin(leftchar, get_rest(buffer, '\n'));
-		}
-		else
-		{
-			str = ft_strjoin(str, get_line(leftchar, '\n'));
-			leftchar = get_rest(leftchar, '\n');
-			leftchar = ft_strjoin(leftchar, buffer);
-		}
-		if (ft_strchr(buffer, '\n') || !leftchar)
+		buffer[bytes] = '\0';
+		leftchar = ft_strjoin(leftchar, buffer);
+		if (ft_strchr(leftchar, '\n') || !leftchar)
 			break ;
-		free(buffer);
+		bytes = read(fd, buffer, BUFFER_SIZE);
 	}
-	free (buffer);
+	free(buffer);
+	if (bytes < 0 || (!leftchar && bytes == 0))
+		return (NULL);
+	str = get_line(leftchar, '\n');
+	leftchar = get_rest(leftchar, '\n');
 	return (str);
 }
-
 #include <stdio.h>
 
 char *get_next_line(int fd); 
@@ -102,6 +101,15 @@ int main(void)
         perror("Error opening file");
         return (1);
     }
-        printf("%s", get_next_line(fd));
-    return (0);
+    printf("line->%s", get_next_line(fd));
+    printf("line->%s", get_next_line(fd));
+    printf("line->%s", get_next_line(fd));
+    printf("line->%s", get_next_line(fd));
+    printf("line->%s", get_next_line(fd));
+    printf("line->%s", get_next_line(fd));
+    printf("line->%s", get_next_line(fd));
+    printf("line->%s", get_next_line(fd));
+
+
+	return (0);
 }

@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.h                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abenzaho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/20 18:49:48 by abenzaho          #+#    #+#             */
-/*   Updated: 2024/11/20 18:49:52 by abenzaho         ###   ########.fr       */
+/*   Created: 2024/11/28 16:56:15 by abenzaho          #+#    #+#             */
+/*   Updated: 2024/11/28 16:56:27 by abenzaho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
-# define GET_NEXT_LINE_H
+#ifndef GET_NEXT_LINE_BONUS_H
+# define GET_NEXT_LINE_BONUS_H
 
 # include <stddef.h>
 # include <stdlib.h>
@@ -25,7 +25,7 @@ void	ft_copy(const char *src, char *dst);
 char	*ft_strjoin(char *s1, char *s2);
 char	*ft_strchr(char *str, char c);
 char	*get_next_line(int fd);
-char	*reading(int fd, char *leftchar);
+char	*reading(int fd, char **leftchar);
 char	*get_rest(char *s, char c);
 char	*get_line(char *s, char c);
 

@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abenzaho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/20 18:48:18 by abenzaho          #+#    #+#             */
-/*   Updated: 2024/11/20 18:48:22 by abenzaho         ###   ########.fr       */
+/*   Created: 2024/11/28 16:55:33 by abenzaho          #+#    #+#             */
+/*   Updated: 2024/11/28 16:55:37 by abenzaho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 char	*get_line(char *s, char c)
 {
@@ -62,7 +62,7 @@ char	*get_rest(char *s, char c)
 	return (NULL);
 }
 
-char	*reading(int fd, char *leftchar)
+char	**reading(int fd, char **leftchar)
 {
 	int		bytes;
 	char	*tmp;
@@ -77,31 +77,37 @@ char	*reading(int fd, char *leftchar)
 		if (bytes == 0)
 			break ;
 		buffer[bytes] = '\0';
-		tmp = ft_strjoin(leftchar, buffer);
+		tmp = ft_strjoin(leftchar[fd], buffer);
 		if (!tmp)
 		{
-			free(leftchar);
+			free(leftchar[fd]);
 			return (NULL);
 		}
-		free(leftchar);
-		leftchar = tmp;
+		free(leftchar[fd]);
+		leftchar[fd] = tmp;
 		if (ft_strchr(buffer, '\n'))
 			break ;
 	}
-	return (leftchar);
+	return (leftchar[fd]);
 }
 
 char	*get_next_line(int fd)
 {
-	static char	*leftchar;
+	static char	**leftchar;
 	char		*str;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	leftchar = reading(fd, leftchar);
-	if (!leftchar)
+    if (!leftchar)
+    {
+        leftcahr = (char **)malloc(1024 * sizeof(char *));
+        if (!leftchar)
+            return (NULL);
+    }
+	leftchar[fd] = reading(fd, leftchar[fd]);
+	if (!leftchar[fd])
 		return (NULL);
-	str = get_line(leftchar, '\n');
-	leftchar = get_rest(leftchar, '\n');
+	str = get_line(leftchar[fd], '\n');
+	leftchar[fd] = get_rest(leftchar[fd], '\n');
 	return (str);
 }

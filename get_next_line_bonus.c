@@ -12,7 +12,7 @@
 
 #include "get_next_line_bonus.h"
 
-char	*get_line(char *s, char c)
+char	*get_the_line(char *s, char c)
 {
 	int		i;
 	char	*str;
@@ -54,7 +54,6 @@ char	*get_rest(char *s, char c)
 			if (s[i + 1] == '\0')
 				return (NULL);
 			rest = ft_strdup(s + i + 1);
-			free(s);
 			return (rest);
 		}
 		i++;
@@ -62,52 +61,48 @@ char	*get_rest(char *s, char c)
 	return (NULL);
 }
 
-char	**reading(int fd, char **leftchar)
+char	*reading(int fd, char *leftchar)
 {
 	int		bytes;
 	char	*tmp;
-	char	buffer[BUFFER_SIZE +1];
+	char	*buffer;
 
+	buffer = (char *)malloc(sizeof(char) * ((size_t)BUFFER_SIZE + 1));
+	if (!buffer)
+		return (NULL);
 	bytes = 1;
 	while (bytes > 0)
 	{
 		bytes = read(fd, buffer, BUFFER_SIZE);
 		if (bytes < 0)
-			return (NULL);
+			return (free(buffer), NULL);
 		if (bytes == 0)
 			break ;
 		buffer[bytes] = '\0';
-		tmp = ft_strjoin(leftchar[fd], buffer);
+		tmp = ft_strjoin(leftchar, buffer);
 		if (!tmp)
-		{
-			free(leftchar[fd]);
-			return (NULL);
-		}
-		free(leftchar[fd]);
-		leftchar[fd] = tmp;
+			return (free(buffer), free(leftchar), NULL);
+		free(leftchar);
+		leftchar = tmp;
 		if (ft_strchr(buffer, '\n'))
 			break ;
 	}
-	return (leftchar[fd]);
+	return (free(buffer), leftchar);
 }
 
 char	*get_next_line(int fd)
 {
-	static char	**leftchar;
+	static char	*leftchar[1024];
 	char		*str;
+	char		*tmp;
 
-	if (fd < 0 || BUFFER_SIZE <= 0)
+	if (fd < 0 || BUFFER_SIZE <= 0 || fd > 1024)
 		return (NULL);
-    if (!leftchar)
-    {
-        leftcahr = (char **)malloc(1024 * sizeof(char *));
-        if (!leftchar)
-            return (NULL);
-    }
 	leftchar[fd] = reading(fd, leftchar[fd]);
 	if (!leftchar[fd])
 		return (NULL);
-	str = get_line(leftchar[fd], '\n');
+	str = get_the_line(leftchar[fd], '\n');
+	tmp = leftchar[fd];
 	leftchar[fd] = get_rest(leftchar[fd], '\n');
-	return (str);
+	return (free(tmp), str);
 }
